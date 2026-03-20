@@ -30,25 +30,16 @@ if (scrollTop)
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	});
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
 	/* burger menu */
 	const burgerMenu = document.querySelector(".burger");
+	const headerMobile = document.querySelector(".header__menu");
+	const header = document.querySelector(".header");
 	if (burgerMenu) {
-		const headerMobile = document.querySelector(".header__menu");
-		const header = document.querySelector(".header");
-		const plashka = document.querySelector(".header__plashka");
 		burgerMenu.addEventListener("click", () => {
 			if (burgerMenu.classList.contains("open")) {
-				if (plashka) {
-					plashka.style.display = "block";
-				}
 				document.body.classList.remove("burger-lock");
 			} else {
-				if (plashka) {
-					plashka.style.display = "none";
-				}
 				document.body.classList.add("burger-lock");
 			}
 			headerMobile.classList.toggle("open");
@@ -59,6 +50,21 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 	/* end burger menu */
+
+	// Закрытие меню при клике на ссылки навигации на мобильных устройствах
+	const headerNavLinks = document.querySelectorAll(".header__nav-link");
+	const handleLinkClick = (e) => {
+		if (window.innerWidth < 1190) {
+			document.body.classList.remove("burger-lock");
+			headerMobile.classList.remove("open");
+			burgerMenu.classList.remove("open");
+			header.classList.remove("header--active");
+			document.querySelector("html").classList.remove("burger-lock");
+		}
+	};
+	headerNavLinks.forEach((link) => {
+		link.addEventListener("click", handleLinkClick);
+	});
 
 	// Popups
 	function popupClose(popupActive) {
@@ -136,122 +142,112 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 	// end popups
 
-
 	// video play
-    const videoWrappers = document.querySelectorAll('.video-wrapper');
-    
-    videoWrappers?.forEach(wrapper => {
-        const video = wrapper.querySelector('.video');
-        const playBtn = wrapper.querySelector('.play-btn');
-        
-        if (video && playBtn) {
-            playBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                video.play();
-                this.classList.add('hidden');
-            });
-            
-            video.addEventListener('click', function() {
-                if (video.paused) {
-                    video.play();
-                } else {
-                    video.pause();
-                }
-            });
+	const videoWrappers = document.querySelectorAll(".video-wrapper");
 
-            video.addEventListener('pause', function() {
-                playBtn.classList.remove('hidden');
-            });
-            
-            video.addEventListener('play', function() {
-                playBtn.classList.add('hidden');
-            });
-            
-            video.addEventListener('ended', function() {
-                playBtn.classList.remove('hidden');
-            });
-        }
-    });
+	videoWrappers?.forEach((wrapper) => {
+		const video = wrapper.querySelector(".video");
+		const playBtn = wrapper.querySelector(".play-btn");
+
+		if (video && playBtn) {
+			playBtn.addEventListener("click", function (e) {
+				e.stopPropagation();
+				video.play();
+				this.classList.add("hidden");
+			});
+
+			video.addEventListener("click", function () {
+				if (video.paused) {
+					video.play();
+				} else {
+					video.pause();
+				}
+			});
+
+			video.addEventListener("pause", function () {
+				playBtn.classList.remove("hidden");
+			});
+
+			video.addEventListener("play", function () {
+				playBtn.classList.add("hidden");
+			});
+
+			video.addEventListener("ended", function () {
+				playBtn.classList.remove("hidden");
+			});
+		}
+	});
 	// end video play
 
-
 	/* yandex map */
-	const maps = document.querySelectorAll('.map');
+	const maps = document.querySelectorAll(".map");
 
 	if (maps.length > 0) {
-
-	function onEntryMap(entries) {
-		entries.forEach(entry => {
-		if (entry.isIntersecting) {
-			loadMap();
+		function onEntryMap(entries) {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					loadMap();
+				}
+			});
 		}
+
+		const observer = new IntersectionObserver(onEntryMap, {
+			threshold: [0.5],
 		});
-	}
 
-	const observer = new IntersectionObserver(onEntryMap, {
-		threshold: [0.5],
-	});
-
-	maps.forEach(map => observer.observe(map));
+		maps.forEach((map) => observer.observe(map));
 	}
 
 	function loadMap() {
-	if (!document.querySelector('[src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"]')) {
-		const script = document.createElement('script');
-		script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
-		script.onload = initMaps;
-		document.head.appendChild(script);
-	} else {
-		initMaps();
-	}
+		if (!document.querySelector('[src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"]')) {
+			const script = document.createElement("script");
+			script.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU";
+			script.onload = initMaps;
+			document.head.appendChild(script);
+		} else {
+			initMaps();
+		}
 	}
 
 	function initMaps() {
 		ymaps.ready(() => {
-	
-		document.querySelectorAll('.map').forEach((mapElement) => {
-	
-			const points = JSON.parse(mapElement.dataset.points);
-	
-			const map = new ymaps.Map(mapElement, {
-			center: points[0].coords,
-			zoom: 15,
-			controls: []
-			});
-	
-			points.forEach(point => {
-	
-			const placemark = new ymaps.Placemark(
-				point.coords,
-				{
-				hintContent: point.hint,
-				balloonContent: point.balloon
-				},
-				{
-				iconLayout: "default#image",
-				iconImageHref: "assets/img/icons/map-pin.svg",
-				iconImageSize: [26, 26],
-				iconImageOffset: [-12, -12],
-				}
-			);
-	
-			map.geoObjects.add(placemark);
-	
-			});
+			document.querySelectorAll(".map").forEach((mapElement) => {
+				const points = JSON.parse(mapElement.dataset.points);
 
-			map.setBounds(map.geoObjects.getBounds(), {
-				checkZoomRange: true,
-				zoomMargin: 20
+				const map = new ymaps.Map(mapElement, {
+					center: points[0].coords,
+					zoom: 15,
+					controls: [],
+				});
+
+				points.forEach((point) => {
+					const placemark = new ymaps.Placemark(
+						point.coords,
+						{
+							hintContent: point.hint,
+							balloonContent: point.balloon,
+						},
+						{
+							iconLayout: "default#image",
+							iconImageHref: "assets/img/icons/map-pin.svg",
+							iconImageSize: [26, 26],
+							iconImageOffset: [-12, -12],
+						},
+					);
+
+					map.geoObjects.add(placemark);
+				});
+
+				map.setBounds(map.geoObjects.getBounds(), {
+					checkZoomRange: true,
+					zoomMargin: 20,
+				});
+
+				map.behaviors.disable(["scrollZoom"]);
 			});
-	
-			map.behaviors.disable(['scrollZoom']);
-	
-		});
-	
 		});
 	}
 	/* end yandex map */
-
 
 	/*  accordion  */
 	const acc = document.getElementsByClassName("accordion");
@@ -334,9 +330,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 	/*  end btn more  */
 
-
 	// Смена фона шапки при скролле
-	const header = document.getElementById("header");
+	//const header = document.getElementById("header");
 	function changeColorHeader() {
 		if (window.scrollY > 100) {
 			header.classList.add("header--light");
@@ -349,219 +344,208 @@ document.addEventListener("DOMContentLoaded", function () {
 		changeColorHeader();
 	});
 
-
 	// плавное пролистывание ссылок в шапке
-	const navLinks = document.querySelectorAll('.header__nav-link[href^="#"]');
-	navLinks.forEach(link => {
-	  link.addEventListener('click', function(e) {
-		e.preventDefault();
-		
-		const targetId = this.getAttribute('href');
-		const targetElement = document.querySelector(targetId);
-		
-		if (targetElement) {
-		  const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 150;
-		  
-		  if ('scrollBehavior' in document.documentElement.style) {
-			window.scrollTo({
-			  top: targetPosition,
-			  behavior: 'smooth'
-			});
-		  } else {
-			window.scrollTo(0, targetPosition);
-		  }
-		}
-	  });
+	const navLinks = document.querySelectorAll('.scroll-link[href^="#"]');
+	navLinks.forEach((link) => {
+		link.addEventListener("click", function (e) {
+			e.preventDefault();
+
+			const targetId = this.getAttribute("href");
+			const targetElement = document.querySelector(targetId);
+
+			if (targetElement) {
+				const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 150;
+
+				if ("scrollBehavior" in document.documentElement.style) {
+					window.scrollTo({
+						top: targetPosition,
+						behavior: "smooth",
+					});
+				} else {
+					window.scrollTo(0, targetPosition);
+				}
+			}
+		});
 	});
 });
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
-  (() => {
-    const PLAYER_SELECTOR = ".audio-player";
-    const WAVE_SELECTOR = ".audio-player__wave";
-    const BAR_SELECTOR = ".audio-player__bar";
-    const BTN_SELECTOR = ".audio-player__btn";
-    const TIME_SELECTOR = ".audio-player__time";
-    const AllTIME_SELECTOR = ".audio-player__time-all";
+	(() => {
+		const PLAYER_SELECTOR = ".audio-player";
+		const WAVE_SELECTOR = ".audio-player__wave";
+		const BAR_SELECTOR = ".audio-player__bar";
+		const BTN_SELECTOR = ".audio-player__btn";
+		const TIME_SELECTOR = ".audio-player__time";
+		const AllTIME_SELECTOR = ".audio-player__time-all";
 
-    const BAR_WIDTH = 4;
-    const BAR_GAP = 3;
-    const BAR_STEP = BAR_WIDTH + BAR_GAP;
+		const BAR_WIDTH = 4;
+		const BAR_GAP = 3;
+		const BAR_STEP = BAR_WIDTH + BAR_GAP;
 
+		function formatTime(seconds) {
+			if (!Number.isFinite(seconds)) return "00:00";
+			const mins = Math.floor(seconds / 60);
+			const secs = Math.floor(seconds % 60);
+			return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+		}
 
-    function formatTime(seconds) {
-      if (!Number.isFinite(seconds)) return "00:00";
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    }
+		function generateBarHeights(count) {
+			const heights = [];
 
-    function generateBarHeights(count) {
-      const heights = [];
+			for (let i = 0; i < count; i++) {
+				const t = i / Math.max(count - 1, 1);
 
-      for (let i = 0; i < count; i++) {
-        const t = i / Math.max(count - 1, 1);
+				const base = 10 + Math.abs(Math.sin(t * 8.5)) * 14 + Math.abs(Math.cos(t * 17)) * 8 + Math.abs(Math.sin((t + 0.3) * 31)) * 10;
 
-        const base =
-          10 +
-          Math.abs(Math.sin(t * 8.5)) * 14 +
-          Math.abs(Math.cos(t * 17)) * 8 +
-          Math.abs(Math.sin((t + 0.3) * 31)) * 10;
+				heights.push(Math.round(Math.min(base, 52)));
+			}
 
-        heights.push(Math.round(Math.min(base, 52)));
-      }
+			return heights;
+		}
 
-      return heights;
-    }
+		function getBarsCount(containerWidth) {
+			return Math.max(1, Math.floor((containerWidth + BAR_GAP) / BAR_STEP));
+		}
 
-    function getBarsCount(containerWidth) {
-      return Math.max(1, Math.floor((containerWidth + BAR_GAP) / BAR_STEP));
-    }
+		function renderWave(player) {
+			const wave = player.querySelector(WAVE_SELECTOR);
+			const audio = player.querySelector("audio");
 
-    function renderWave(player) {
-      const wave = player.querySelector(WAVE_SELECTOR);
-      const audio = player.querySelector("audio");
+			if (!wave) return;
 
-      if (!wave) return;
+			const width = wave.clientWidth;
+			if (!width) return;
 
-      const width = wave.clientWidth;
-      if (!width) return;
+			const barsCount = getBarsCount(width);
+			const prevCount = Number(wave.dataset.count || 0);
 
-      const barsCount = getBarsCount(width);
-      const prevCount = Number(wave.dataset.count || 0);
+			if (prevCount === barsCount) return;
 
-      if (prevCount === barsCount) return;
+			const progress = audio && audio.duration ? audio.currentTime / audio.duration : 0;
 
-      const progress = audio && audio.duration
-        ? audio.currentTime / audio.duration
-        : 0;
+			wave.innerHTML = "";
+			wave.dataset.count = String(barsCount);
 
-      wave.innerHTML = "";
-      wave.dataset.count = String(barsCount);
+			const heights = generateBarHeights(barsCount);
 
-      const heights = generateBarHeights(barsCount);
+			heights.forEach((height, index) => {
+				const bar = document.createElement("div");
+				bar.className = BAR_SELECTOR.slice(1);
+				bar.style.height = `${height}px`;
 
-      heights.forEach((height, index) => {
-        const bar = document.createElement("div");
-        bar.className = BAR_SELECTOR.slice(1);
-        bar.style.height = `${height}px`;
+				if (index < Math.floor(progress * barsCount)) {
+					bar.classList.add("is-active");
+				}
 
-        if (index < Math.floor(progress * barsCount)) {
-          bar.classList.add("is-active");
-        }
+				wave.appendChild(bar);
+			});
+		}
 
-        wave.appendChild(bar);
-      });
-    }
+		function updateProgress(player) {
+			const audio = player.querySelector("audio");
+			const time = player.querySelector(TIME_SELECTOR);
+			const bars = player.querySelectorAll(BAR_SELECTOR);
 
-    function updateProgress(player) {
-      const audio = player.querySelector("audio");
-      const time = player.querySelector(TIME_SELECTOR);
-      const bars = player.querySelectorAll(BAR_SELECTOR);
+			if (!audio || !time || !bars.length) return;
 
-      if (!audio || !time || !bars.length) return;
+			time.textContent = formatTime(audio.currentTime);
 
-      time.textContent = formatTime(audio.currentTime);
+			const progress = audio.duration ? audio.currentTime / audio.duration : 0;
+			const activeCount = Math.floor(progress * bars.length);
 
-      const progress = audio.duration ? audio.currentTime / audio.duration : 0;
-      const activeCount = Math.floor(progress * bars.length);
+			bars.forEach((bar, index) => {
+				bar.classList.toggle("is-active", index < activeCount);
+			});
+		}
 
-      bars.forEach((bar, index) => {
-        bar.classList.toggle("is-active", index < activeCount);
-      });
-    }
+		function pauseOtherPlayers(currentPlayer) {
+			document.querySelectorAll(PLAYER_SELECTOR).forEach((player) => {
+				if (player === currentPlayer) return;
 
-    function pauseOtherPlayers(currentPlayer) {
-      document.querySelectorAll(PLAYER_SELECTOR).forEach((player) => {
-        if (player === currentPlayer) return;
+				const audio = player.querySelector("audio");
+				const btn = player.querySelector(BTN_SELECTOR);
 
-        const audio = player.querySelector("audio");
-        const btn = player.querySelector(BTN_SELECTOR);
+				if (audio && !audio.paused) {
+					audio.pause();
+				}
 
-        if (audio && !audio.paused) {
-          audio.pause();
-        }
+				if (btn) {
+					btn.textContent = "▶";
+				}
+			});
+		}
 
-        if (btn) {
-          btn.textContent = "▶";
-        }
-      });
-    }
+		function initPlayer(player) {
+			const audio = player.querySelector("audio");
+			const btn = player.querySelector(BTN_SELECTOR);
+			const time = player.querySelector(TIME_SELECTOR);
+			const timeAll = player.querySelector(AllTIME_SELECTOR);
 
-    function initPlayer(player) {
-      const audio = player.querySelector("audio");
-      const btn = player.querySelector(BTN_SELECTOR);
-      const time = player.querySelector(TIME_SELECTOR);
-      const timeAll = player.querySelector(AllTIME_SELECTOR);
+			if (!audio || !btn || !time) return;
 
-      if (!audio || !btn || !time) return;
+			renderWave(player);
 
-      renderWave(player);
+			audio.addEventListener("loadedmetadata", () => {
+				time.textContent = "00:00";
 
-      audio.addEventListener("loadedmetadata", () => {
-        time.textContent = "00:00";
+				if (Number.isFinite(audio.duration)) {
+					timeAll.textContent = formatTime(audio.duration);
+				}
 
-		if (Number.isFinite(audio.duration)) {
-			timeAll.textContent = formatTime(audio.duration);
-		  }
+				renderWave(player);
+				updateProgress(player);
+			});
 
+			audio.addEventListener("timeupdate", () => {
+				updateProgress(player);
+			});
 
-        renderWave(player);
-        updateProgress(player);
-      });
+			audio.addEventListener("play", () => {
+				pauseOtherPlayers(player);
+				btn.textContent = "❚❚";
+			});
 
-      audio.addEventListener("timeupdate", () => {
-        updateProgress(player);
-      });
+			audio.addEventListener("pause", () => {
+				if (!audio.ended) {
+					btn.textContent = "▶";
+				}
+			});
 
-      audio.addEventListener("play", () => {
-        pauseOtherPlayers(player);
-        btn.textContent = "❚❚";
-      });
+			audio.addEventListener("ended", () => {
+				btn.textContent = "▶";
+				updateProgress(player);
+			});
 
-      audio.addEventListener("pause", () => {
-        if (!audio.ended) {
-          btn.textContent = "▶";
-        }
-      });
+			btn.addEventListener("click", async () => {
+				if (audio.paused) {
+					pauseOtherPlayers(player);
+					try {
+						await audio.play();
+						btn.textContent = "❚❚";
+					} catch (error) {
+						console.error("Ошибка воспроизведения аудио:", error);
+					}
+				} else {
+					audio.pause();
+					btn.textContent = "▶";
+				}
+			});
+		}
 
-      audio.addEventListener("ended", () => {
-        btn.textContent = "▶";
-        updateProgress(player);
-      });
+		const players = document.querySelectorAll(PLAYER_SELECTOR);
+		players.forEach(initPlayer);
 
-      btn.addEventListener("click", async () => {
-        if (audio.paused) {
-          pauseOtherPlayers(player);
-          try {
-            await audio.play();
-            btn.textContent = "❚❚";
-          } catch (error) {
-            console.error("Ошибка воспроизведения аудио:", error);
-          }
-        } else {
-          audio.pause();
-          btn.textContent = "▶";
-        }
-      });
-    }
+		let resizeTimeout = null;
 
-    const players = document.querySelectorAll(PLAYER_SELECTOR);
-    players.forEach(initPlayer);
+		window.addEventListener("resize", () => {
+			clearTimeout(resizeTimeout);
 
-    let resizeTimeout = null;
-
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimeout);
-
-      resizeTimeout = setTimeout(() => {
-        document.querySelectorAll(PLAYER_SELECTOR).forEach((player) => {
-          renderWave(player);
-          updateProgress(player);
-        });
-      }, 100);
-    });
-  })();
+			resizeTimeout = setTimeout(() => {
+				document.querySelectorAll(PLAYER_SELECTOR).forEach((player) => {
+					renderWave(player);
+					updateProgress(player);
+				});
+			}, 100);
+		});
+	})();
 });

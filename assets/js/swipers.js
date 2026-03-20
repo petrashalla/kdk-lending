@@ -1,2 +1,37 @@
-let interviewSwiper=new Swiper(".interview__swiper",{slidesPerView:1.1,spaceBetween:12,pagination:{el:".interview__swiper-pagination"},breakpoints:{1200:{slidesPerView:3,spaceBetween:30},700:{slidesPerView:2.1,spaceBetween:20}}}),comfortSwiper=new Swiper(".comfort__swiper",{slidesPerView:"auto",spaceBetween:12,navigation:{nextEl:".comfort__swiper-button-next",prevEl:".comfort__swiper-button-prev"},pagination:{el:".comfort__swiper-pagination"},breakpoints:{768:{pagination:{el:".comfort__swiper-pagination",type:"fraction"}}}});if(window.innerWidth<1200){let e=new Swiper(".services__swiper",{slidesPerView:1.1,spaceBetween:12,pagination:{el:".services__swiper-pagination"},breakpoints:{700:{slidesPerView:2.1,spaceBetween:20}}})}let reviewsSwiper=new Swiper(".reviews__swiper",{slidesPerView:1.1,spaceBetween:12,navigation:{nextEl:".reviews__swiper-button-next",prevEl:".reviews__swiper-button-prev"},pagination:{el:".reviews__swiper-pagination"},breakpoints:{1300:{slidesPerView:3,spaceBetween:30},700:{slidesPerView:2.1,spaceBetween:20}}}),voiceSwiper=new Swiper(".voice__swiper",{slidesPerView:1.1,spaceBetween:12,navigation:{nextEl:".voice__swiper-button-next",prevEl:".voice__swiper-button-prev"},pagination:{el:".voice__swiper-pagination"},breakpoints:{1300:{slidesPerView:3,spaceBetween:30},700:{slidesPerView:2.1,spaceBetween:20}}});
+let interviewSwiper = new Swiper(".interview__swiper", {
+		slidesPerView: 1.1,
+		spaceBetween: 12,
+		pagination: { el: ".interview__swiper-pagination", clickable: true },
+		breakpoints: { 1200: { slidesPerView: 3, spaceBetween: 30 }, 700: { slidesPerView: 2.1, spaceBetween: 20 } },
+	}),
+	comfortSwiper = new Swiper(".comfort__swiper", {
+		slidesPerView: "auto",
+		spaceBetween: 12,
+		navigation: { nextEl: ".comfort__swiper-button-next", prevEl: ".comfort__swiper-button-prev" },
+		pagination: { el: ".comfort__swiper-pagination", clickable: true },
+		breakpoints: { 768: { pagination: { el: ".comfort__swiper-pagination", type: "fraction" } } },
+	});
+if (window.innerWidth < 1200) {
+	let e = new Swiper(".services__swiper", {
+		slidesPerView: 1.1,
+		spaceBetween: 12,
+		pagination: { el: ".services__swiper-pagination", clickable: true },
+		breakpoints: { 700: { slidesPerView: 2.1, spaceBetween: 20 } },
+	});
+}
+let reviewsSwiper = new Swiper(".reviews__swiper", {
+		slidesPerView: 1.1,
+		spaceBetween: 12,
+		loop: true,
+		navigation: { nextEl: ".reviews__swiper-button-next", prevEl: ".reviews__swiper-button-prev" },
+		pagination: { el: ".reviews__swiper-pagination", clickable: true },
+		breakpoints: { 1300: { slidesPerView: 3, spaceBetween: 30 }, 700: { slidesPerView: 2.1, spaceBetween: 20 } },
+	}),
+	voiceSwiper = new Swiper(".voice__swiper", {
+		slidesPerView: 1.1,
+		spaceBetween: 12,
+		navigation: { nextEl: ".voice__swiper-button-next", prevEl: ".voice__swiper-button-prev" },
+		pagination: { el: ".voice__swiper-pagination", clickable: true },
+		breakpoints: { 1300: { slidesPerView: 3, spaceBetween: 30 }, 700: { slidesPerView: 2.1, spaceBetween: 20 } },
+	});
 //# sourceMappingURL=swipers.js.map
